@@ -1,7 +1,7 @@
 ## DependX
 Library that provides F# DSL for dependency injection registration for your favorite IoC provider
 
-:warning: **Currently project in active development and only supports Autofac container for now.**
+:warning: **Project in active development now and currently only supports Autofac container.**
 
 DependX allows you to chang this:
 
