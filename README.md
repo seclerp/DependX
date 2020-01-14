@@ -27,10 +27,9 @@ Into this:
 let deps () = dependencies [
     configure selfContract<Service> {
         lifetime singleton
-        named "Kek"
+        named "Some name"
         param "abc" (fromInstance 123)
         param "abc2" (fromFactory <| fun () -> 123)
-        param "abc3" fromDep
     }
     contract<IService, Service>
 ]
@@ -116,16 +115,13 @@ And complete example:
 let deps () = dependencies [
     configure selfContract<Service> {
         lifetime singleton
-        named "Kek"
+        named "Some name"
         param "abc" (fromInstance 123)
         param "abc2" (fromFactory <| fun () -> 123)
-        param "abc3" fromDep
     }
     contract<IService, Service>
 ]
 ```
-
-
 
 #### :warning: TODO: Move whole documentation to another file
 
