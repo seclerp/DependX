@@ -14,7 +14,7 @@ let deps =
         .SingleInstance()
         .Named("Some name")
         .WithParameter("abc", 123)
-        .WithParameter("abc2", fun _ -> fun () -> 123) |> ignore
+        .WithParameter("abc2", fun _ -> 123) |> ignore
     
     containerBuilder.RegisterType<Service>()
         .As<IService>() |> ignore
