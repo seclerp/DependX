@@ -12,7 +12,7 @@ let deps =
     containerBuilder.RegisterType<Service>()
         .AsSelf()
         .SingleInstance()
-        .Named("Kek")
+        .Named("Some name")
         .WithParameter("abc", 123)
         .WithParameter("abc2", fun _ -> fun () -> 123) |> ignore
     
