@@ -1,0 +1,7 @@
+.idea
+.vs
+.ionide
+*.user
+bin/
+obj/
+.DS_Store
