@@ -13,9 +13,6 @@ let ``Simple injection must be resolved correctly`` =
     test "Simple injection must be resolved correctly" {
         let deps () = dependencies [
             contract<IHelloService, HelloService>
-    //        configure contract<IHelloService, HelloService> {
-    //            named "ConfiguredHello"
-    //        }
         ]
 
         let result =

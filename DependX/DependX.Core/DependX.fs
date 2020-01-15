@@ -68,6 +68,10 @@ let interpretBuilder (interpret: 'builder -> Dependency -> unit) (builder: 'buil
 module Helpers =
     let contract<'contract, 'service> = initial<'contract, 'service>
     let selfContract<'service> = initial<'service, 'service>
+    let options<'options> (strategy: DependencyResolveStrategy) =
+        { selfContract<'options> with
+            lifetime = Singleton
+            strategy = strategy }
 
     let singleton = Singleton
     let transient = Transient

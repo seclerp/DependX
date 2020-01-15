@@ -15,7 +15,7 @@ let depsOld =
         .SingleInstance()
         .Named("Kek")
         .WithParameter("abc", 123)
-        .WithParameter("abc2", fun _ -> fun () -> 123) |> ignore
+        .WithParameter("abc2", fun _ -> 123) |> ignore
     
     containerBuilder.RegisterType<Service>()
         .As<IService>() |> ignore
@@ -23,6 +23,7 @@ let depsOld =
     containerBuilder
 
 let deps () = dependencies [
+    usingInstance "" |> options<Service>
     configure selfContract<Service> {
         lifetime singleton
         named "Kek"
