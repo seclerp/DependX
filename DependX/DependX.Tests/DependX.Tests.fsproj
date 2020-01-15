@@ -15,6 +15,7 @@
     <ItemGroup>
       <PackageReference Include="Expecto" Version="8.13.1" />
       <PackageReference Include="Expecto.FsCheck" Version="8.13.1" />
+      <PackageReference Include="Expecto.TestResults" Version="8.13.1" />
       <PackageReference Include="Microsoft.Extensions.Logging" Version="2.2.0" />
     </ItemGroup>
 

@@ -7,6 +7,7 @@
 
     <ItemGroup>
         <Compile Include="Library.fs" />
+        <Content Include="DependX.AspNetCore.Autofac.nuspec" />
     </ItemGroup>
 
     <ItemGroup>

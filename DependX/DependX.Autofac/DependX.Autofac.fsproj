@@ -6,6 +6,7 @@
 
     <ItemGroup>
         <Compile Include="Library.fs" />
+        <Content Include="DependX.Autofac.nuspec" />
     </ItemGroup>
 
     <ItemGroup>

@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
+    <metadata>
+        <id>DependX.Core</id>
+        <version>1.0.0</version>
+        <authors>Andrew Rublyov</authors>
+        <projectUrl>https://github.com/AndrewRublyov/DependX</projectUrl>
+        <license type="expression">MIT</license>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>Library that provides F# DSL for dependency injection registration for your favorite IoC provider</description>
+        <copyright>Copyright © 2020 Andrew Rublyov</copyright>
+        <tags>fsharp dependency-injection ioc autofac</tags>
+    </metadata>
+</package>

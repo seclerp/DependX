@@ -6,6 +6,7 @@
 
     <ItemGroup>
         <Compile Include="Library.fs" />
+        <Content Include="DependX.AspNetCore.nuspec" />
     </ItemGroup>
 
     <ItemGroup>

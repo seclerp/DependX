@@ -1,0 +1,26 @@
+version: 1.0.{build}
+branches:
+  only:
+  - master
+image: Visual Studio 2019
+configuration: Release
+shallow_clone: true
+build_script:
+- ps: >-
+    nuget pack DependX/DependX.Core/DependX.Core.nuspec -Version $env:appveyor_build_version
+    
+    nuget pack DependX/DependX.Autofac/DependX.Autofac.nuspec -Version $env:appveyor_build_version
+    
+    nuget pack DependX/DependX.AspNetCore/DependX.AspNetCore.nuspec -Version $env:appveyor_build_version
+    
+    nuget pack DependX/DependX.AspNetCore.Autofac/DependX.AspNetCore.Autofac.nuspec -Version $env:appveyor_build_version
+artifacts:
+- path: '**\*.nupkg'
+  name: nuget
+test_script:
+- ps: dotnet run --project DependX/DependX.Tests
+after_test:
+- ps: >-
+    $wc = New-Object 'System.Net.WebClient'
+    
+    $wc.UploadFile("https://ci.appveyor.com/api/testresults/nunit/$($env:APPVEYOR_JOB_ID)", (Resolve-Path .\TestResults.xml))
