@@ -5,7 +5,7 @@ Library that provides F# DSL for dependency injection registration for your favo
 
 :warning: **Project in active development now and currently only supports Autofac container.**
 
-DependX allows you to chang this:
+DependX allows you to change this:
 
 ```fsharp
 let deps =
