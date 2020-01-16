@@ -1,7 +1,10 @@
-## DependX
-[![Build status](https://ci.appveyor.com/api/projects/status/7ep04nheqfav80on?svg=true)](https://ci.appveyor.com/project/AndrewRublyov/dependx)
+<h2 align="center">DependX</h2>
 
-Library that provides F# DSL for dependency injection registration for your favorite IoC provider
+<p align="center"> <a href="https://ci.appveyor.com/project/AndrewRublyov/dependx"> <img src="https://ci.appveyor.com/api/projects/status/7ep04nheqfav80on?svg=true"></a></p>
+
+<p align="center">Library that provides F# DSL for dependency injection registration for your favorite IoC provider</p>
+
+---
 
 :warning: **Project in active development now and currently only supports Autofac container.**
 
