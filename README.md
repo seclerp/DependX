@@ -48,40 +48,112 @@ ASP.NET Core extensions made for **ASP.NET Core 2.2+**
 
 Autofac libraries currently built on top of **Autofac 4.9.4** and **Autofac.Extensions.DependencyInjection 5.0.1**
 
-### Getting started
+### Getting started with ASP.NET Core and Autofac 
 
-Most of the magic located in those modules:
-```fsharp
-open DependX // For core types and logic
-open DependX.Autofac // For autofac-specific interpreter
-```
-Next, lets define the dependency composition:
-```fsharp
-let deps () = dependencies [...]
-```
-`()` means the input that will be passed here from startup or from any other place where this composition will be used. For example, it may be `IConfiguration`:
-```fsharp
-let deps (config: IConfiguration) = dependencies [...]
-```
-So lets define the simple contract:
+Before we start, let's assume that there are some dependencies:
 
 ```fsharp
-let deps () = dependencies [
-   contract<IService, Service>
+// ExampleServices.fs
+module SomeProject.ExampleServices
+
+type ICustomLogger =
+    abstract LogInfo : string -> unit
+
+type IMessageService = abstract SayHello : unit -> unit
+
+type CustomLogger() =
+    interface ICustomLogger with
+        member _.LogInfo(str) = printfn "%s" str
+
+type MessageService(logger: ICustomLogger) =
+    interface IHelloService with
+        member _.Say(message) = logger.LogInfo message
+
+type StartupService(messageService: IMessageService) =
+    interface IHostedService with
+        member _.StartAsync(token: CancellationToken) =
+            messageService.Say("Hello")
+            Task.CompletedTask
+
+        member _.StopAsync(_: CancellationToken) =
+            Task.CompletedTask
+```
+
+Here we defined dummy logger, `IMessageService` that uses that logger and `IHostedService` that on start uses our `IMessageService` for writing some stuff.
+
+Then, lets define our dependencies module:
+```fsharp
+// Dependencies.fs
+module SomeProject.Dependencies
+
+open DependX
+open DependX.Autofac
+open DependX.AspNetCore
+open ExampleServices
+
+let register = dependencies [
+    // ...
 ]
 ```
-This example defines `Service` implementation with `IService` abstraction, that link called contract on DependX.
-You could also use same type for abstraction:
+
+`open DependX` - for core types and logic
+
+`open DependX.Autofac` - for autofac-specific interpreter
+
+`open DependX.AspNetCore` - for ASP.NET Core related stuff, in our case - `hostedService` 
+
+`let register = dependencies [...]` - this is our initial dependency composition. We will declare dependencies inside that block.
+
+Lets add our newly created dependencies:
+
 ```fsharp
-let deps () = dependencies [
-   selfContract<Service>
+// Dependencies.fs
+// ...
+let register = dependencies [
+    configure contract<ICustomLogger, CustomLogger> {
+        lifetime singleton
+    }
+    contract<ISomeService, SomeService>
+    hostedService<StartupService>
 ]
 ```
-And it may be resolved using `Service` type.
 
-**TODO: Examples of setup in ASP.NET Core**
+In that case we registered `CustomLogger` as singleton and `SomeService` as transient (by default). We also added StartupService as IHostedService just like regular `.AddHostedService` in ASP.NET Core DI.
 
-### Projects structure
+That's it. We only need to provide information how dependency need to be registered, **there are no direct usage on Autofac related stuff like ContainerBuilder**.
+
+After that we need to use our register function in `Startup.fs` class:
+```fsharp
+// Startup.fs
+// ...
+open Dependencies
+// ...
+type Startup(...) =
+    member this.ConfigureContainer(builder: ContainerBuilder) =
+        register builder |> ignore
+```
+
+And (if you don't added it yet) configure Autofac in `Program.fs`:
+
+```fsharp
+// ...
+open DependX.AspNetCore.Autofac
+// ...
+    Host.CreateDefaultBuilder(args)
+        .UseServiceProviderFactory(AutofacServiceProviderFactory()) // ASP.NET Core 3+ related stuff
+        .ConfigureWebHostDefaults(fun webBuilder ->
+            webBuilder.UseStartup<Startup>() |> ignore
+            webBuilder |> configureAutofacDefaults
+        )
+```
+
+After project start you will see
+```
+Hello
+```
+in the console window. More information about what functions you could use for registratino can be found in **[documentation](DOCUMENTATION.md)**
+
+### Solution structure
 
 #### Core
 - `DependX.Core` - core library with main logic for creating abstract dependencies
