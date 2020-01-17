@@ -42,11 +42,13 @@ let deps () = dependencies [
 
 Also there are some helper functions to nicely get started into your .NET Core or ASP.NET Core environment
 
-Library built on top of **.NET Startard 2.0**
+Core library built on top of **.NET Startard 2.0**
 
-### Documentation
+ASP.NET Core extensions made for **ASP.NET Core 2.2+**
 
-#### Getting started
+Autofac libraries currently built on top of **Autofac 4.9.4** and **Autofac.Extensions.DependencyInjection 5.0.1**
+
+### Getting started
 
 Most of the magic located in those modules:
 ```fsharp
@@ -79,56 +81,24 @@ And it may be resolved using `Service` type.
 
 **TODO: Examples of setup in ASP.NET Core**
 
-#### Dependency configuration
+### Projects structure
 
-Contracts can be customized using `configure` function.
-It produces dependency builder that has custom operations that you could use to set name, parameters resolcing, lifetime, etc.
+#### Core
+- `DependX.Core` - core library with main logic for creating abstract dependencies
 
-**`configure [contract provider] { ... }`** - defines configuration for given contract, There are two built-in contract providers:
+#### Autofac
+- `DependX.Autofac` - provides interpret functions that produces Autofac IoC container from abstract dependencies
 
-- `contract<Abstraction, Implementation>`
-- `selfContract<Implementation>`
+#### ASP.NET Core extensions
+- `DependX.AspNetCore` - provides helper functions to support injection of ASP.NET Core related services (like IHostedService) 
+- `DependX.AspNetCore.Autofac` - provides helper functions to configure and use Autofac in ASP.NET Core
 
-**`lifetime [Lifetime]`** - sets lifetime for current dependency. Built-in helpers:
+#### Tests
+- `DependX.Tests` - contains unit tests for core logic
 
-- `singleton` - instance per runtime
-- `transient` - instance per call (DEFAULT)
-- `scoped` - instance per scope
+### Documentation
 
-**`param [name] [resolve strategy]`** - sets how concrete parameter need to be resolved for constructor. Currently only named way to setup parameter is supported. Resolve strategies:
-
-- `fromInstance [object]` - resolves parameter using provided object
-- `fromFactory [factory]` - resolves parameter by calling the factory. Signature of factory is `unit -> 'value`
-- `fromDep` - resolves parameter using container (DEFAULT)
-- `fromDepNamed [name]` - same as `fromDep` but with name passed to container resolver
-
-**`resolve [resolve strategy]`** - sets the way how dependency must be resolved. Options here:
-
-- `usingInstance [object]` - resolves dependency using provided object
-- `usingFactory [factory]` - resolves dependency by calling the factory. Signature of factory is `unit -> 'service`
-- `auto` - resolves dependency using container (DEFAULT)
-
-So default configuration for service looks like:
-```fsharp
-configure selfContract<Service> {
-    lifetime transient
-    resolve auto
-}
-```
-And complete example:
-```fsharp
-let deps () = dependencies [
-    configure selfContract<Service> {
-        lifetime singleton
-        named "Some name"
-        param "abc" (fromInstance 123)
-        param "abc2" (fromFactory <| fun () -> 123)
-    }
-    contract<IService, Service>
-]
-```
-
-#### :warning: TODO: Move whole documentation to another file
+You could found full documentation **[here](DOCUMENTATION.md)**
 
 ### Contributing
 
