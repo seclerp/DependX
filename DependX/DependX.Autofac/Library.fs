@@ -6,6 +6,7 @@ open Autofac.Builder
 
 type AutofacBuilder = ContainerBuilder
 
+type Register<'input, 'builder> = 'input -> 'builder -> 'builder
 
 let interpret (autofacBuilder: AutofacBuilder) (state: Dependency) =
     let interpretParameter (depBuilder: IRegistrationBuilder<'a, ReflectionActivatorData, 'c>) =
@@ -39,16 +40,16 @@ let interpret (autofacBuilder: AutofacBuilder) (state: Dependency) =
 
 let dependencies deps (builder: AutofacBuilder) = interpretBuilder interpret builder deps
 
-type DependenciesModule<'parameters>(register : 'parameters -> ContainerBuilder -> ContainerBuilder, parameters: 'parameters) =
+type AutofacModule<'parameters>(register : 'parameters -> ContainerBuilder -> ContainerBuilder, parameters: 'parameters) =
     inherit Module()
     override __.Load(builder: ContainerBuilder) =
         register parameters builder |> ignore
 
-let makeContainer (register : DependXBuilder<'parameters, AutofacBuilder>) (parameters: 'parameters) =
+let makeContainer (register : Register<'parameters, AutofacBuilder>) (parameters: 'parameters) =
     (ContainerBuilder() |> register parameters).Build()
 
-let makeModule (register : DependXBuilder<'parameters, AutofacBuilder>) (parameters: 'parameters) =
-    DependenciesModule<'parameters>(register, parameters)
+let makeModule (register : Register<'parameters, AutofacBuilder>) (parameters: 'parameters) =
+    AutofacModule<'parameters>(register, parameters)
 
-let addModule (builder: ContainerBuilder) (module': DependenciesModule<'parameters>) =
+let addModule (builder: AutofacBuilder) (module': AutofacModule<'parameters>) =
     builder.RegisterModule(module') |> ignore
