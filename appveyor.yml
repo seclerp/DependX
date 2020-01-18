@@ -7,18 +7,18 @@ configuration: Release
 shallow_clone: true
 build_script:
 - ps: >-
-    nuget pack DependX/DependX.Core/DependX.Core.nuspec -Version $env:appveyor_build_version
+    nuget pack src/DependX.Core/DependX.Core.nuspec -Version $env:appveyor_build_version
     
-    nuget pack DependX/DependX.Autofac/DependX.Autofac.nuspec -Version $env:appveyor_build_version
+    nuget pack src/DependX.Autofac/DependX.Autofac.nuspec -Version $env:appveyor_build_version
     
-    nuget pack DependX/DependX.AspNetCore/DependX.AspNetCore.nuspec -Version $env:appveyor_build_version
+    nuget pack src/DependX.AspNetCore/DependX.AspNetCore.nuspec -Version $env:appveyor_build_version
     
-    nuget pack DependX/DependX.AspNetCore.Autofac/DependX.AspNetCore.Autofac.nuspec -Version $env:appveyor_build_version
+    nuget pack src/DependX.AspNetCore.Autofac/DependX.AspNetCore.Autofac.nuspec -Version $env:appveyor_build_version
 artifacts:
 - path: '**\*.nupkg'
   name: nuget
 test_script:
-- ps: dotnet run --project DependX/DependX.Tests
+- ps: dotnet run --project src/DependX.Tests
 after_test:
 - ps: >-
     $wc = New-Object 'System.Net.WebClient'
