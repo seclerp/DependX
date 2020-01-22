@@ -19,6 +19,8 @@ type DependencyResolveStrategy =
     | Reflection
     /// Resolve using factory function
     | Factory of (unit -> obj)
+    /// Resolve type that registrates as non parameterised generic type using reflection (e.g. Repository<>)
+    | ReflectionGeneric
 
 /// Describes how constructor parameter should be resolver
 type ParameterResolveStrategy =
@@ -55,16 +57,22 @@ type Dependency = {
 }
 
 /// Initial value of Dependency
-/// 'contract - abstraction type on which 'service will be resolved
-/// 'service - implementation type
-let initial<'contract, 'service> : Dependency = {
-    contractType = typeof<'contract>
-    serviceType = typeof<'service>
+/// contract - abstraction type on which 'service' will be resolved
+/// service - implementation type
+let initialRaw contract service : Dependency = {
+    contractType = contract
+    serviceType = service
     lifetime = Lifetime.Transient
     name = None
     strategy = DependencyResolveStrategy.Reflection
     parameters = []
 }
+
+/// Initial value of Dependency
+/// 'contract - abstraction type on which 'service will be resolved
+/// 'service - implementation type
+let initial<'contract, 'service> : Dependency =
+    initialRaw typedefof<'contract> typedefof<'service>
 
 /// Encapsulate logic for building and configuring Dependency
 type DependencyBuilder(initial: Dependency) =
@@ -103,7 +111,14 @@ let interpretBuilder (interpret: 'builder -> Dependency -> unit) (builder: 'buil
 let contract<'contract, 'service> = initial<'contract, 'service>
 
 /// Creates default Dependency using 'service type both for abstraction and implementation 
-let selfContract<'service> = initial<'service, 'service>
+let selfContract<'service> = contract<'service, 'service>
+
+/// Creates Dependency using 'contract type as a abstraction and 'service as an implementation with 'generic' resolve strategy
+let genericContract contract service =
+    { initialRaw contract service with strategy = DependencyResolveStrategy.ReflectionGeneric }
+
+/// Creates Dependency using 'service type both for abstraction and implementation with 'generic' resolve strategy
+let genericSelfContract service = genericContract service service
 
 /// Registers type with given strategy as Singleton
 /// Mainly used for registering simple configuration objects

@@ -36,6 +36,7 @@ let interpret (autofacBuilder: AutofacBuilder) (state: Dependency) =
     match state.strategy with
     | DependencyResolveStrategy.Value value -> autofacBuilder.RegisterInstance(value) |> interpretDepBuilder
     | DependencyResolveStrategy.Reflection -> autofacBuilder.RegisterType(state.serviceType) |> interpretDepBuilder
+    | DependencyResolveStrategy.ReflectionGeneric -> autofacBuilder.RegisterGeneric(state.serviceType) |> interpretDepBuilder
     | DependencyResolveStrategy.Factory factory -> autofacBuilder.Register(fun _ -> factory()) |> interpretDepBuilder
 
 let dependencies deps (builder: AutofacBuilder) = interpretBuilder interpret builder deps
